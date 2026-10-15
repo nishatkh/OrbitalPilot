@@ -33,7 +33,6 @@ The project brings together reinforcement learning, reward engineering, Python-b
   <img src="https://i.postimg.cc/jj5V03YG/image.png" alt="OrbitalPilot 3D spacecraft simulation dashboard" width="100%" />
   <p><em>Interactive 3D spacecraft simulation with live telemetry, AI flight control, and an aerospace-inspired HUD.</em></p>
 </div>
----
 
 ## Features
 
