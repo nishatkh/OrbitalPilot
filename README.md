@@ -30,31 +30,6 @@ The project brings together reinforcement learning, reward engineering, Python-b
 
 ---
 
-## Demo Video
-
-Watch the OrbitalPilot demonstration here.
-
-**Video:** Add your project demonstration video below.
-
-<!--
-YouTube embedding:
-Replace VIDEO_ID with your YouTube video ID and uncomment this block.
-
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=VIDEO_ID">
-    <img
-      src="https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg"
-      alt="OrbitalPilot demonstration"
-      width="800"
-    />
-  </a>
-</div>
--->
-
-**Video link:** [Add your demonstration video URL here](#demo-video)
-
-A complete demonstration can include the 3D environment, AI-controlled landing, live telemetry, training and evaluation metrics, and reward-shaping comparisons.
-
 ---
 
 ## Features
