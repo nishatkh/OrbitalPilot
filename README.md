@@ -514,30 +514,7 @@ Check the following:
 4. The browser console contains no connection or protocol errors.
 5. The backend sends messages in the format expected by the frontend.
 
-### 3D Scene Does Not Match the Simulation
 
-Confirm that the frontend uses the latest backend telemetry for position and orientation. Check coordinate conversions, units, axis directions, and update timing.
-
-The frontend's local fallback should be treated as a separate simulation unless its behavior has been validated against the Python environment.
-
----
-
-## Roadmap
-
-Potential future improvements include:
-
-- More reliable evaluation across multiple random seeds.
-- Better analysis of reward hacking and policy behavior.
-- Persistent training metrics and experiment history.
-- Improved real-time telemetry and WebSocket reconnection.
-- Synchronized 3D playback and episode replay.
-- Exported policies for browser-side inference.
-- Automated tests for the backend, model loading, and frontend communication.
-- Reproducible training configurations and saved checkpoints.
-
-Roadmap items should be marked as completed only when they are implemented and tested.
-
----
 
 ## Author
 
