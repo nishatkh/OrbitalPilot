@@ -1,109 +1,76 @@
 # OrbitalPilot
 
-**An AI-powered spacecraft landing simulation built with reinforcement learning, real-time telemetry, and interactive 3D visualization.**
+A spacecraft landing simulation where a reinforcement learning agent learns to land on its own, with a live 3D dashboard on top of it.
 
-OrbitalPilot explores autonomous spacecraft control using Proximal Policy Optimization (PPO), Gymnasium's LunarLander-v3 environment, and Stable-Baselines3. It combines reinforcement-learning experiments with a Three.js and React dashboard designed to visualize spacecraft movement, flight telemetry, and agent performance.
+I built OrbitalPilot to see how far I could take a small RL problem. The agent is trained with Proximal Policy Optimization (PPO) on Gymnasium's `LunarLander-v3` using Stable-Baselines3. A React and Three.js frontend shows what the agent is doing in 3D, with telemetry streaming in from the Python side.
 
-The project brings together reinforcement learning, reward engineering, Python-based simulation, real-time communication, and 3D frontend development in one experimental platform.
+It started as a way to understand reward engineering, and it grew into a project that mixes RL, a Python simulation backend, real-time communication, and 3D frontend work.
 
-> **Project scope:** The learning environment is a simulated lunar lander. The booster-style 3D model and aerospace dashboard are visualization elements, not a validated physical model of a real rocket or space shuttle.
+> **Scope note:** The learning environment is the standard simulated lunar lander. The booster-style 3D model and the aerospace-style HUD are just for visualization. They are not a validated physical model of a real rocket or shuttle.
 
 ---
 
 ## Table of Contents
 
-- [Demo Video](#demo-video)
 - [Features](#features)
-- [Technology Stack](#technology-stack)
-- [System Architecture](#system-architecture)
+- [Tech Stack](#tech-stack)
+- [How It Is Put Together](#how-it-is-put-together)
 - [How It Works](#how-it-works)
 - [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Installation and Setup](#installation-and-setup)
+- [Getting Started](#getting-started)
 - [Controls](#controls)
 - [Training and Evaluation](#training-and-evaluation)
 - [Reward Shaping Experiments](#reward-shaping-experiments)
-- [Performance Results](#performance-results)
 - [Troubleshooting](#troubleshooting)
-- [Roadmap](#roadmap)
-- [License](#license)
+- [Author](#author)
 
 ---
+
 <div align="center">
   <img src="https://i.postimg.cc/jj5V03YG/image.png" alt="OrbitalPilot 3D spacecraft simulation dashboard" width="100%" />
-  <p><em>Interactive 3D spacecraft simulation with live telemetry, AI flight control, and an aerospace-inspired HUD.</em></p>
+  <p><em>The 3D simulation with live telemetry, AI flight control, and the HUD.</em></p>
 </div>
 
 ## Features
 
-### 1. Reinforcement Learning with PPO
+**PPO agent.** I train an agent with PPO on `LunarLander-v3`, save the policy, reload it later, and evaluate it over many episodes.
 
-- Train an autonomous agent using Proximal Policy Optimization.
-- Use Gymnasium's `LunarLander-v3` environment.
-- Save and reload trained Stable-Baselines3 policies.
-- Evaluate model performance across multiple episodes.
+**Reward shaping experiments.** I compare the baseline reward against custom ones, including potential-based reward shaping (PBRS), velocity penalties, and stability bonuses. A big part of this is watching for reward hacking, where the agent finds a way to score well without actually landing.
 
-### 2. Reward Shaping and Experimentation
+**Live communication.** The Python simulation talks to the frontend over WebSockets. It sends observations, chosen actions, rewards, and episode status, and the dashboard shows the latest state. When the frontend is connected to the backend, the Python environment is the source of truth.
 
-- Compare a baseline PPO agent with custom reward strategies.
-- Investigate potential-based reward shaping (PBRS).
-- Study the effects of velocity penalties and stability incentives.
-- Examine reward hacking, where an agent maximizes a reward without properly completing the intended task.
+**3D visualization.** The scene is built with Three.js. It shows the lander, the landing area, and the engine effects, and it follows the simulation state with orbit and chase camera views.
 
-### 3. Real-Time Simulation Communication
+**Dashboard.** The HUD has a glass-style look and shows position, velocity, orientation, touchdown info, episode reward, and performance history. There are also views for training analytics and the reward experiments.
 
-- Connect the Python simulation to the frontend using WebSockets.
-- Stream state observations, selected actions, rewards, and episode status.
-- Display the latest simulation state in the dashboard.
-- Support a client-side fallback where implemented.
-
-The Python environment should remain the source of truth whenever the frontend is connected to the Gymnasium simulation.
-
-### 4. Interactive 3D Visualization
-
-- Render a spacecraft-inspired 3D model using Three.js.
-- Visualize the lander, landing area, and engine effects.
-- Provide orbital and chase-camera views where implemented.
-- Display movement and orientation based on simulation telemetry.
-
-The 3D scene is a visualization of the simulation state. It should not be interpreted as a physically validated spacecraft dynamics model.
-
-### 5. Aerospace-Inspired Dashboard
-
-- Glassmorphic heads-up display (HUD).
-- Position, velocity, orientation, and touchdown telemetry.
-- Episode reward and performance history.
-- Training analytics and reward-shaping experiment views.
-- Manual control and simulation playback options where implemented.
+One thing worth saying clearly: the 3D scene only visualizes what the simulation reports. It is not a physics engine of its own.
 
 ---
 
-## Technology Stack
+## Tech Stack
 
-| Technology | Purpose |
+| Technology | What I use it for |
 |---|---|
-| Python | Reinforcement-learning backend and simulation integration |
-| Gymnasium | Reinforcement-learning environment API |
-| LunarLander-v3 | Simulated lunar landing task |
-| Box2D | Physics engine used by the LunarLander environment |
-| Stable-Baselines3 | PPO model training and inference |
-| PyTorch | Neural-network computation |
-| FastAPI | Optional HTTP API and WebSocket application framework |
-| WebSockets | Real-time communication between backend and frontend |
-| React | Frontend user interface |
-| TypeScript | Type-safe frontend development |
-| Three.js | 3D rendering and visualization |
-| Vite | Frontend development server and build tool |
-| Tailwind CSS | Interface styling, if configured |
-| ONNX / JSON | Optional exported policy formats for browser-side inference |
-
-Actual dependencies and supported features should match the implementation in the repository and its dependency files.
+| Python | RL backend and simulation |
+| Gymnasium | RL environment API |
+| LunarLander-v3 | The landing task |
+| Box2D | Physics behind LunarLander |
+| Stable-Baselines3 | PPO training and inference |
+| PyTorch | Neural network computation |
+| FastAPI | HTTP API and WebSocket server |
+| WebSockets | Backend to frontend communication |
+| React | Frontend UI |
+| TypeScript | Typed frontend code |
+| Three.js | 3D rendering |
+| Vite | Dev server and build tool |
+| Tailwind CSS | Styling |
+| ONNX / JSON | Exported policies for browser-side inference |
 
 ---
 
-## System Architecture
+## How It Is Put Together
 
-OrbitalPilot is organized around a Python reinforcement-learning environment and a 3D web interface.
+The project has two main halves: a Python RL backend and a React frontend with a Three.js scene.
 
 ```text
                  ORBITALPILOT
@@ -125,75 +92,63 @@ OrbitalPilot is organized around a Python reinforcement-learning environment and
    Live Telemetry and HUD
 ```
 
-### Backend
+**Backend.** Runs the environment, loads or trains policies, and sends simulation data to the frontend.
 
-The backend manages the reinforcement-learning environment, loads or trains policies, and provides simulation information to the frontend.
+**Frontend.** Renders the 3D scene, shows telemetry, and handles user controls.
 
-### Frontend
+**Communication.** The two sides exchange structured messages over a WebSocket.
 
-The frontend renders the 3D scene, presents telemetry, and provides controls for interacting with the simulation.
-
-### Communication
-
-When a WebSocket server is used, the frontend and backend exchange structured messages. The implementation should define the message format, connection status, update frequency, and handling of resets or disconnections.
-
-**Important:** A browser-side fallback model is a separate inference implementation. Its predictions and numerical integration should not be assumed to reproduce the original Python model and Box2D physics exactly.
+A heads up on the browser-side fallback model: it is a separate inference implementation. Its predictions and numerical integration will not match the original Python model and Box2D physics exactly.
 
 ---
 
 ## How It Works
 
-OrbitalPilot follows a reinforcement-learning workflow.
+The loop is the usual RL one:
 
-1. **Observe:** The agent receives the current state of the lander.
-2. **Select an action:** The PPO policy chooses one of the available discrete actions.
-3. **Simulate:** Gymnasium advances the environment and applies the action.
-4. **Calculate reward:** The environment evaluates the outcome of the action.
-5. **Learn:** During training, PPO uses collected experience to update the policy.
-6. **Visualize:** Simulation observations and episode information can be streamed to the frontend.
-7. **Evaluate:** The trained policy is tested on episodes that were not used for the current training update.
+1. **Observe.** The agent reads the current state of the lander.
+2. **Act.** The PPO policy picks one of the discrete actions.
+3. **Simulate.** Gymnasium steps the environment with that action.
+4. **Reward.** The environment scores the outcome.
+5. **Learn.** During training, PPO uses the collected experience to update the policy.
+6. **Visualize.** Observations and episode info are streamed to the frontend.
+7. **Evaluate.** The trained policy is tested on fresh episodes.
 
-### Observation Space
+### Observation space
 
-`LunarLander-v3` provides eight observations:
+`LunarLander-v3` gives eight observations:
 
-| Index | Observation | Description |
+| Index | Observation | Meaning |
 |---:|---|---|
-| 0 | Horizontal position | Position along the horizontal axis |
-| 1 | Vertical position | Position along the vertical axis |
-| 2 | Horizontal velocity | Horizontal movement speed |
-| 3 | Vertical velocity | Vertical movement speed |
-| 4 | Angle | Lander orientation |
-| 5 | Angular velocity | Rate of rotation |
-| 6 | Left-leg contact | Whether the left landing leg is in contact |
-| 7 | Right-leg contact | Whether the right landing leg is in contact |
+| 0 | Horizontal position | Position along the x axis |
+| 1 | Vertical position | Position along the y axis |
+| 2 | Horizontal velocity | Speed along x |
+| 3 | Vertical velocity | Speed along y |
+| 4 | Angle | Orientation of the lander |
+| 5 | Angular velocity | Rotation rate |
+| 6 | Left-leg contact | Whether the left leg is touching the ground |
+| 7 | Right-leg contact | Whether the right leg is touching the ground |
 
-These values help the agent determine its movement, orientation, and landing state.
+### Action space
 
-### Action Space
+The discrete version has four actions:
 
-The standard discrete LunarLander action space has four actions:
-
-| Action | Description |
+| Action | Meaning |
 |---:|---|
 | 0 | Do nothing |
 | 1 | Fire the left orientation engine |
 | 2 | Fire the main engine |
 | 3 | Fire the right orientation engine |
 
-The agent learns a policy for choosing actions that lead to better landing outcomes.
-
 ---
 
 ## Project Structure
-
-The following illustrates the intended organization. Keep only files and features that exist in the actual repository.
 
 ```text
 OrbitalPilot/
 ├── frontend/
 │   ├── public/
-│   │   └── models/                 # Exported policy assets, if available
+│   │   └── models/                 # Exported policy assets
 │   ├── src/
 │   │   ├── components/             # HUD, interface, and 3D components
 │   │   ├── services/               # WebSocket and inference services
@@ -201,46 +156,42 @@ OrbitalPilot/
 │   ├── package.json
 │   └── vite.config.ts
 ├── models/                         # Trained model checkpoints
-├── videos/                         # Recorded demonstrations
+├── videos/                         # Recorded demos
 ├── train_lander.py                 # PPO training
 ├── evaluate_lander.py              # Policy evaluation
-├── reward_experiments.py            # Reward-shaping experiments
-├── export_weights.py               # Policy weight export, if implemented
-├── export_onnx.py                  # ONNX export, if implemented
-├── ws_server.py                    # WebSocket server, if implemented
+├── reward_experiments.py           # Reward shaping experiments
+├── export_weights.py               # Policy weight export
+├── export_onnx.py                  # ONNX export
+├── ws_server.py                    # WebSocket server
 ├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
-### Main Components
-
-| Component | Responsibility |
+| File | What it does |
 |---|---|
 | `train_lander.py` | Creates and trains the PPO policy |
 | `evaluate_lander.py` | Evaluates a trained policy |
 | `reward_experiments.py` | Runs alternative reward strategies |
 | `ws_server.py` | Streams simulation data to connected clients |
-| `export_weights.py` | Exports supported policy parameters |
-| `export_onnx.py` | Exports a model to ONNX where supported |
-| `frontend/` | Contains the 3D dashboard and interface |
-| `models/` | Stores trained model checkpoints |
-
-Script names, model formats, and output paths may vary depending on the current implementation.
+| `export_weights.py` | Exports policy parameters |
+| `export_onnx.py` | Exports a model to ONNX |
+| `frontend/` | The 3D dashboard and interface |
+| `models/` | Trained model checkpoints |
 
 ---
 
-## Prerequisites
+## Getting Started
 
-Install the following before running the project:
+### What you need
 
-- Python 3.12 recommended for the dependency setup described below.
-- Node.js and npm for the frontend.
-- Git.
-- SWIG on macOS if required to build the Box2D Python dependency.
-- A supported browser for the Three.js interface.
+- Python 3.12
+- Node.js and npm
+- Git
+- SWIG on macOS, needed to build the Box2D dependency
+- A modern browser for the Three.js interface
 
-Check the installed versions:
+Check your versions:
 
 ```bash
 python3 --version
@@ -248,110 +199,86 @@ node --version
 npm --version
 ```
 
----
-
-## Installation and Setup
-
-### 1. Clone the Repository
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/nishatkh/OrbitalPilot.git
 cd OrbitalPilot
 ```
 
-### 2. Install SWIG on macOS
-
-If SWIG is not already installed:
+### 2. Install SWIG (macOS)
 
 ```bash
 brew install swig
-```
-
-Verify the installation:
-
-```bash
 swig -version
 ```
 
-### 3. Create a Python Virtual Environment
-
-Using Python 3.12:
+### 3. Create a virtual environment
 
 ```bash
 python3.12 -m venv .venv
 ```
 
-Activate the environment.
+Activate it.
 
-**Fish shell:**
+Fish:
 
 ```fish
 source .venv/bin/activate.fish
 ```
 
-**Bash or Zsh:**
+Bash or Zsh:
 
 ```bash
 source .venv/bin/activate
 ```
 
-### 4. Install Backend Dependencies
-
-Upgrade the packaging tools:
+### 4. Install backend dependencies
 
 ```bash
 python -m pip install --upgrade pip setuptools wheel
-```
-
-Install the dependencies defined by the repository:
-
-```bash
 python -m pip install -r requirements.txt
 ```
 
-If you are setting up the environment before a `requirements.txt` has been prepared, install the core reinforcement-learning dependencies:
+If you only want the core RL packages:
 
 ```bash
 python -m pip install "gymnasium[box2d]" stable-baselines3
 ```
 
-If the project uses FastAPI and a WebSocket server, ensure the appropriate packages are included in the dependency file. For example:
+For the WebSocket server:
 
 ```bash
 python -m pip install fastapi "uvicorn[standard]"
 ```
 
-Install dependencies in the active virtual environment, not in a different Python installation.
+Make sure you install everything inside the active virtual environment.
 
-### 5. Verify the Environment
+### 5. Check that everything works
 
 ```bash
 python -c "import gymnasium as gym; import Box2D; import torch; from stable_baselines3 import PPO; env = gym.make('LunarLander-v3'); obs, info = env.reset(); print('Observation shape:', obs.shape); print('Action space:', env.action_space); env.close()"
 ```
 
-The expected observation shape is `(8,)`, and the standard discrete action space contains four actions.
+You should see an observation shape of `(8,)` and a discrete action space with four actions.
 
-### 6. Start the Backend
-
-If the repository includes `ws_server.py`:
+### 6. Start the backend
 
 ```bash
 python ws_server.py
 ```
 
-Use the host and port configured by the server. Confirm that the backend is running before opening a frontend that depends on it.
-
-If the server is implemented as a FastAPI application with an ASGI entry point, it may instead be started with a command such as:
+Or, if you run it as an ASGI app:
 
 ```bash
 uvicorn ws_server:app --reload
 ```
 
-Use this alternative only if `ws_server.py` exposes an ASGI application named `app` and supports that launch method.
+Only use the `uvicorn` command if `ws_server.py` exposes an app called `app`.
 
-### 7. Start the Frontend
+### 7. Start the frontend
 
-Open a second terminal:
+In a second terminal:
 
 ```bash
 cd frontend
@@ -359,146 +286,110 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite in the terminal. The default Vite development port is commonly `5173`, but your project configuration may use a different port, such as `3000`.
-
-If the frontend cannot connect to the backend, check the configured WebSocket URL, server port, and browser console.
+Open the URL Vite prints. It is usually `http://localhost:5173`, but yours might use a different port. If the frontend cannot reach the backend, check the WebSocket URL, the ports, and the browser console.
 
 ---
 
 ## Controls
 
-The following controls describe the intended interface. Keyboard behavior depends on the frontend implementation.
-
-| Key | Intended action |
+| Key | Action |
 |---|---|
 | `W` / `Up Arrow` | Main engine |
-| `A` / `Left Arrow` | Left orientation control |
-| `D` / `Right Arrow` | Right orientation control |
-| `S` / `Down Arrow` | Idle engines |
+| `A` / `Left Arrow` | Left orientation engine |
+| `D` / `Right Arrow` | Right orientation engine |
+| `S` / `Down Arrow` | Engines off |
 | `Space` | Reset the episode |
 | `P` | Pause or resume |
-
-**Control mapping note:** The Gymnasium action space uses discrete actions, while the frontend may expose keyboard commands. The mapping must be implemented explicitly. For accurate behavior, manual commands should be translated into supported environment actions rather than assumed to correspond directly to real spacecraft controls.
 
 ---
 
 ## Training and Evaluation
 
-### Train the PPO Agent
-
-From the repository root:
+### Train the agent
 
 ```bash
 python train_lander.py
 ```
 
-The script should initialize the environment, configure PPO, run training, and save the trained policy.
+This sets up the environment, configures PPO, trains, and saves the policy. Training time and the output path depend on the settings in the script.
 
-The training duration and output location depend on the script's configuration.
-
-### Evaluate a Trained Model
+### Evaluate a model
 
 ```bash
 python evaluate_lander.py
 ```
 
-Evaluate policies across multiple episodes and record:
+I run each policy over many episodes and track:
 
-- Mean episode reward.
-- Standard deviation of rewards.
-- Successful landing rate.
-- Crash rate.
-- Episode length.
+- Mean episode reward
+- Standard deviation of rewards
+- Successful landing rate
+- Crash rate
+- Episode length
 
-Use consistent evaluation conditions when comparing different models.
+I keep the evaluation conditions the same when comparing models, otherwise the numbers are not comparable.
 
-### Run Reward Experiments
+### Run the reward experiments
 
 ```bash
 python reward_experiments.py
 ```
 
-This script can be used to compare the baseline reward with custom reward-shaping strategies, provided those experiments are implemented in the file.
+This compares the baseline reward against my custom shaping strategies.
 
-### Benchmark Reference
+### Benchmark
 
-An average return of approximately **200 or higher over 100 evaluation episodes** is a commonly used LunarLander benchmark. It is a reference target, not a verified result for OrbitalPilot.
+The commonly used target for LunarLander is an average return of about **200 or higher over 100 evaluation episodes**. That is a reference number from the community, not a result I am claiming for OrbitalPilot.
 
 ---
 
 ## Reward Shaping Experiments
 
-Reward shaping changes the feedback received by an agent to help guide learning.
+Reward shaping changes the feedback the agent gets so learning is easier to guide. This is the part of the project I care most about, because the gap between a high reward and a real landing is where things get interesting.
 
-OrbitalPilot investigates the relationship between reward design, learning behavior, and actual landing success.
+**Baseline.** The original Gymnasium reward, used as the reference for everything else.
 
-### Baseline Reward
+**Custom shaping.** I try rewards that encourage controlled descent, low horizontal velocity, less rotation, and a stable touchdown. The risk is that extra rewards create unintended incentives. An agent can learn to hover and collect an intermediate reward instead of landing.
 
-The baseline experiment uses the original reward provided by Gymnasium's LunarLander environment. It provides a reference for evaluating custom approaches.
+**Potential-based shaping.** The standard form is:
 
-### Custom Reward Shaping
+$$F(s, s') = \gamma \Phi(s') - \Phi(s)$$
 
-Custom rewards may encourage behaviors such as controlled descent, lower horizontal velocity, reduced rotation, or stable touchdown.
+where:
 
-However, additional rewards can introduce unintended incentives. For example, an agent may learn to hover or optimize an intermediate reward rather than complete a landing.
+- $s$ is the current state
+- $s'$ is the next state
+- $\gamma$ is the discount factor
+- $\Phi$ is a potential function over states
+- $F$ is the shaping reward
 
-### Potential-Based Reward Shaping
+Under the right assumptions, this kind of shaping keeps the optimal policy the same while still giving the agent extra guidance.
 
-A common potential-based shaping function is:
-
-\[
-F(s,s')=\gamma\Phi(s')-\Phi(s)
-\]
-
-Where:
-
-- \(s\) is the current state.
-- \(s'\) is the next state.
-- \(\gamma\) is the discount factor.
-- \(\Phi\) is a state-potential function.
-- \(F\) is the shaping reward.
-
-Under appropriate assumptions, potential-based reward shaping preserves the optimal policy while providing additional learning guidance.
-
-To make a fair comparison, evaluate all policies using the original environment reward, and report the evaluation setup, number of episodes, and measured results.
+For a fair comparison, I evaluate every policy on the original environment reward, and I report the setup, the number of episodes, and the measured results.
 
 ---
 
 ## Troubleshooting
 
-### Gymnasium Cannot Be Imported
-
-Activate the virtual environment and install the backend dependencies:
+**Gymnasium cannot be imported.** Activate the virtual environment and reinstall:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-### SWIG or Box2D Installation Fails
+**SWIG or Box2D fails to install.** On macOS, run `brew install swig`. If it still fails, check your Python version and the versions of Gymnasium and its Box2D dependencies.
 
-On macOS, install SWIG:
+**Model checkpoint not found.** Make sure training finished and that the model path in the evaluation or WebSocket script matches the saved file.
 
-```bash
-brew install swig
-```
+**Frontend cannot connect to the backend.**
 
-If installation still fails, check Python compatibility and the versions of Gymnasium and its Box2D dependencies.
+1. Check that the Python server is running.
+2. Check that the frontend uses the right WebSocket URL.
+3. Check that the ports match.
+4. Look for connection or protocol errors in the browser console.
+5. Make sure the backend sends messages in the format the frontend expects.
 
-### Model Checkpoint Not Found
-
-Verify that training completed and that the model path in the evaluation or WebSocket script matches the saved checkpoint.
-
-### Frontend Cannot Connect to the Backend
-
-Check the following:
-
-1. The Python server is running.
-2. The frontend uses the correct WebSocket URL.
-3. The server and frontend ports are correct.
-4. The browser console contains no connection or protocol errors.
-5. The backend sends messages in the format expected by the frontend.
-
-
+---
 
 ## Author
 
@@ -510,4 +401,4 @@ Repository: [OrbitalPilot](https://github.com/nishatkh/OrbitalPilot)
 
 ---
 
-OrbitalPilot is an experimental project exploring reinforcement learning, reward engineering, simulation telemetry, and interactive 3D visualization. Its goal is to make the process of training and evaluating an autonomous landing agent easier to understand through both quantitative results and visual feedback.
+OrbitalPilot is an experimental project. I want it to make training and evaluating a landing agent easier to understand, both through the numbers and by actually watching it fly.
