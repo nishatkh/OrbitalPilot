@@ -539,14 +539,6 @@ Roadmap items should be marked as completed only when they are implemented and t
 
 ---
 
-## License
-
-This project is intended to use the MIT License.
-
-Before distributing it, add a `LICENSE` file containing the full MIT License text and the appropriate copyright holder and year.
-
----
-
 ## Author
 
 **Nishat Khan**
