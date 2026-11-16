@@ -464,22 +464,6 @@ To make a fair comparison, evaluate all policies using the original environment 
 
 ---
 
-## Performance Results
-
-Add measured results here after completing the training and evaluation runs.
-
-| Experiment | Mean Reward | Reward Standard Deviation | Landing Success Rate |
-|---|---:|---:|---:|
-| Baseline PPO | Not measured | Not measured | Not measured |
-| Custom Reward | Not measured | Not measured | Not measured |
-| Potential-Based Shaping | Not measured | Not measured | Not measured |
-
-Do not interpret training reward alone as proof of better performance. Report landing success, failures, and evaluation conditions alongside reward statistics.
-
-If a model reaches an average reward above 230, include the result only after verifying it through the evaluation script. Ideally, report the number of episodes, random seeds, and model checkpoint used.
-
----
-
 ## Troubleshooting
 
 ### Gymnasium Cannot Be Imported
